@@ -128,6 +128,7 @@ static NSString *const playbackRate = @"rate";
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   [self removePlayerItemObservers];
   [_player removeObserver:self forKeyPath:playbackRate context:nil];
+  [_playerLayer removeObserver:self forKeyPath:readyForDisplayKeyPath]
 }
 
 #pragma mark - App lifecycle handlers
@@ -212,10 +213,12 @@ static NSString *const playbackRate = @"rate";
 
 - (void)addPlayerItemObservers
 {
-  [_playerItem addObserver:self forKeyPath:statusKeyPath options:0 context:nil];
-  [_playerItem addObserver:self forKeyPath:playbackBufferEmptyKeyPath options:0 context:nil];
-  [_playerItem addObserver:self forKeyPath:playbackLikelyToKeepUpKeyPath options:0 context:nil];
-  _playerItemObserversSet = YES;
+  if(!_playerItemObserversSet){
+    [_playerItem addObserver:self forKeyPath:statusKeyPath options:0 context:nil];
+    [_playerItem addObserver:self forKeyPath:playbackBufferEmptyKeyPath options:0 context:nil];
+    [_playerItem addObserver:self forKeyPath:playbackLikelyToKeepUpKeyPath options:0 context:nil];
+    _playerItemObserversSet = YES;
+  }
 }
 
 /* Fixes https://github.com/brentvatne/react-native-video/issues/43

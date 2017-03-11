@@ -117,7 +117,7 @@ static NSString *const playbackRate = @"rate";
     {
         return [playerItem seekableTimeRanges].firstObject.CMTimeRangeValue;
     }
-    
+
     return (kCMTimeRangeZero);
 }
 
@@ -604,6 +604,7 @@ static NSString *const playbackRate = @"rate";
 {
     if( _player )
     {
+      [_playerLayer removeObserver:self forKeyPath:readyForDisplayKeyPath];
       _playerLayer = [AVPlayerLayer playerLayerWithPlayer:_player];
       _playerLayer.frame = self.bounds;
       _playerLayer.needsDisplayOnBoundsChange = YES;

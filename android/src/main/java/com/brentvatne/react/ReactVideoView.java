@@ -486,7 +486,11 @@ public class ReactVideoView extends ScalableVideoView implements MediaPlayer.OnP
     protected void onDetachedFromWindow() {
 
         mMediaPlayerValid = false;
-        super.onDetachedFromWindow();
+        try {
+            super.onDetachedFromWindow();
+        } catch (IllegalStateException ise) {
+            Log.e("ReactVideo", "Action performed on uninitialized mediaplayer");
+        }
     }
 
     @Override

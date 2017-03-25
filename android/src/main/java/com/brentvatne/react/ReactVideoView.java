@@ -91,6 +91,7 @@ public class ReactVideoView extends ScalableVideoView implements MediaPlayer.OnP
     private float mRate = 1.0f;
     private boolean mPlayInBackground = false;
     private boolean mActiveStatePauseStatus = false;
+    private boolean mActiveStatePauseStatusInitialized = false;
 
     private int mMainVer = 0;
     private int mPatchVer = 0;
@@ -166,8 +167,9 @@ public class ReactVideoView extends ScalableVideoView implements MediaPlayer.OnP
         }
         if ( mMediaPlayer != null ) {
             mMediaPlayerValid = false;
-            mMediaPlayer.stop();
-            mMediaPlayer.release();
+            // mMediaPlayer.stop();
+            // mMediaPlayer.release();
+            release();
         }
     }
 
@@ -209,7 +211,8 @@ public class ReactVideoView extends ScalableVideoView implements MediaPlayer.OnP
                     headers.put("Cookie", cookie);
                 }
 
-                setDataSource(mThemedReactContext, parsedUrl, headers);
+                // setDataSource(mThemedReactContext, parsedUrl, headers);
+                setDataSource(uriString);
             } else if (isAsset) {
                 if (uriString.startsWith("content://")) {
                     Uri parsedUrl = Uri.parse(uriString);
@@ -262,7 +265,8 @@ public class ReactVideoView extends ScalableVideoView implements MediaPlayer.OnP
 
         // not async to prevent random crashes on Android playback from local resource due to race conditions
         try {
-          prepare(this);
+          // prepare(this);
+            prepareAsync(this);
         } catch (Exception e) {
           e.printStackTrace();
         }
@@ -290,7 +294,12 @@ public class ReactVideoView extends ScalableVideoView implements MediaPlayer.OnP
 
         mPaused = paused;
 
-        if (!mMediaPlayerValid) {
+        if ( !mActiveStatePauseStatusInitialized ) {
+            mActiveStatePauseStatus = mPaused;
+            mActiveStatePauseStatusInitialized = true;
+        }
+
+         if (!mMediaPlayerValid) {
             return;
         }
 
